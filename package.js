@@ -14,3 +14,9 @@ Package.onUse(function (api) {
 
   api.export('TimeTracker', 'web');
 });
+
+Package.onTest(function (api) {
+  api.use(['tinytest', 'tracker', 'dispatch:time-tracker'], 'web');
+
+  api.addFiles('time_tracker_tests.js', 'web');
+});

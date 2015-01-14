@@ -2,7 +2,6 @@ TimeTracker = {};
 
 /**
  * Invalidate a computation at a specific date.
- * XXX Unit Test
  * @param {Date} date
  */
 TimeTracker.changeAt = function (date) {
@@ -17,7 +16,6 @@ var FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
  * NOTE: We ignore times > 48 hours from now because it is
  * unlikely the app will still be running for that long.
  * If we run into a long running application we can make this configurable.
- * XXX Unit Test
  * @param {Number} milliseconds The number of milliseconds before
  * triggering that the dependency changed.
  */

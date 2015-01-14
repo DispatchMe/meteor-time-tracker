@@ -3,7 +3,7 @@ TimeTracker = {};
 /**
  * Invalidate a computation at a specific date.
  * XXX Unit Test
- * @param date
+ * @param {Date} date
  */
 TimeTracker.changeAt = function (date) {
   var millisecondsFromNow = date.getTime() - (new Date()).getTime();
@@ -18,8 +18,8 @@ var FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
  * unlikely the app will still be running for that long.
  * If we run into a long running application we can make this configurable.
  * XXX Unit Test
- * @param milliseconds The number of milliseconds before
- *                     triggering the dependency changed.
+ * @param {Number} milliseconds The number of milliseconds before
+ * triggering that the dependency changed.
  */
 TimeTracker.changeIn = function (milliseconds) {
   if (milliseconds < 0 || milliseconds > FORTY_EIGHT_HOURS) return;

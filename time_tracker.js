@@ -25,16 +25,24 @@ TimeTracker.changeIn = function (milliseconds) {
   var dependency = new Tracker.Dependency();
   dependency.depend();
 
-  var timeout = null;
-  timeout = Meteor.setTimeout(function () {
-    dependency.changed();
-    timeout = null;
-  }, milliseconds);
+  function changeIn(runAt) {
+    if (dependency) {
+
+      // Invalidate dependency
+      dependency.changed();
+
+      // Run again
+      Kernel.timed(changeIn, runAt + milliseconds);
+    }
+  };
+
+  // Initial run x milliseconds from now
+  Kernel.timed(changeIn, Kernel.now() + milliseconds);
 
   // Clean up the timeout when there is no longer a dependency.
   Tracker.onInvalidate(function () {
-    if (timeout && !dependency.hasDependents()) {
-      Meteor.clearTimeout(timeout);
+    if (!dependency.hasDependents()) {
+      dependency = null;
     }
   });
 };

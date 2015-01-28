@@ -8,7 +8,10 @@ Package.describe({
 Package.onUse(function (api) {
   api.versionsFrom('1.0');
 
-  api.use('tracker', 'web');
+  api.use([
+    'tracker',
+    'dispatch:kernel@0.0.2'
+  ], 'web');
 
   api.addFiles('time_tracker.js', 'web');
 

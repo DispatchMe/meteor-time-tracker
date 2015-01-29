@@ -20,7 +20,7 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function (api) {
-  api.use(['tinytest', 'tracker', 'dispatch:time-tracker'], 'web');
+  api.use(['tinytest', 'tracker', 'dispatch:time-tracker', 'dispatch:kernel'], 'web');
 
   api.addFiles('time_tracker_tests.js', 'web');
 });

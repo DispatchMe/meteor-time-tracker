@@ -1,7 +1,7 @@
 Package.describe({
   name: 'dispatch:time-tracker',
   summary: 'Time-based reactivity.',
-  version: '1.0.0',
+  version: '1.0.1',
   git: 'https://github.com/DispatchMe/meteor-time-tracker.git'
 });
 

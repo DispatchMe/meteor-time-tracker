@@ -1,57 +1,48 @@
-// Stub out setTimeout and clearTimeout
-var timeouts = {},
-  timeoutId = 0;
+Tinytest.addAsync('time-tracker - changeIn', function (test, complete) {
 
-var runTimeouts = function () {
-  _.each(timeouts, function (timeout, key) {
-    delete timeouts[key];
-    timeout();
-  });
-};
-
-Meteor.clearTimeout = function (id) {
-  delete timeouts[id];
-};
-
-Meteor.setTimeout = function (func) {
-  timeouts[++timeoutId] = func;
-  return timeoutId;
-};
-
-var testTimeTracker = function (test, dependOnTime) {
   var invalidations = 0;
 
-  var existingTimeouts = Object.keys(timeouts).length;
-
   var handle = Tracker.autorun(function () {
-    dependOnTime();
+    TimeTracker.changeIn(1000);
     invalidations++;
   });
 
-  // Tracker should run once on startup
-  test.equal(invalidations, 1);
+  Kernel.timed(function() {
+    test.equal(invalidations, 1);
+  }, Kernel.now() + 1000);
 
-  // After the timeout it should have run again
-  runTimeouts();
-  Tracker.flush();
-  test.equal(invalidations, 2);
+  Kernel.timed(function() {
+    test.equal(invalidations, 2);
 
-  // it should have registered another setTimeout
-  test.equal(Object.keys(timeouts).length - existingTimeouts, 1);
-  handle.stop();
+    handle.stop();
+    complete();
+  }, Kernel.now() + 2000);
 
-  // the timeout should be cleared on invalidation
-  test.equal(Object.keys(timeouts).length - existingTimeouts, 0);
-};
-
-Tinytest.add('time-tracker - changeIn', function (test) {
-  testTimeTracker(test, function () {
-    TimeTracker.changeIn(1000);
-  });
 });
 
-Tinytest.add('time-tracker - changeAt', function (test) {
-  testTimeTracker(test, function () {
+Tinytest.addAsync('time-tracker - changeAt', function (test, complete) {
+  var invalidations = 0;
+
+  var handle = Kernel.autorun(function () {
     TimeTracker.changeAt(new Date());
+    invalidations++;
   });
+
+  var firstFrame = 0;
+
+  Kernel.run(function(timestamp, lasttime, frame) {
+    firstFrame = frame;
+    test.equal(invalidations, 1);
+  });
+
+  Kernel.timed(function(runAt, timestamp, lasttime, frame) {
+    // console.log(frame - firstFrame + 1, invalidations);
+
+    // There should be the same amount of invalidations as frames
+    //test.equal(invalidations, frame - firstFrame + 1, 'Make sure your system is ready');
+    test.isTrue(invalidations > 20, 'Make sure your system is ready');
+
+    handle.stop();
+    complete();
+  }, Kernel.now() + 2000);
 });

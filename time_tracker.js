@@ -1,12 +1,31 @@
 TimeTracker = {};
 
+var _millisecondsFromNow = function(date) {
+  return date.getTime() - (new Date()).getTime();
+};
+
+var _getTomorrow = function() {
+  var today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
+};
+
+// Reactive variable tracking the date of today
+var _trackToday = new ReactiveVar(Date.now());
+
+/**
+ * Provides a nice reactive function with the date of today
+ * @return {Date}
+ */
+TimeTracker.today =function() {
+  return _trackToday.get();
+};
+
 /**
  * Invalidate a computation at a specific date.
  * @param {Date} date
  */
 TimeTracker.changeAt = function (date) {
-  var millisecondsFromNow = date.getTime() - (new Date()).getTime();
-  TimeTracker.changeIn(millisecondsFromNow);
+  TimeTracker.changeIn(_millisecondsFromNow(date));
 };
 
 var FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
@@ -25,16 +44,38 @@ TimeTracker.changeIn = function (milliseconds) {
   var dependency = new Tracker.Dependency();
   dependency.depend();
 
-  var timeout = null;
-  timeout = Meteor.setTimeout(function () {
-    dependency.changed();
-    timeout = null;
-  }, milliseconds);
+  function changeIn(runAt) {
+    if (dependency) {
+
+      // Invalidate dependency
+      dependency.changed();
+
+      // Run again
+      Kernel.timed(changeIn, runAt + milliseconds);
+    }
+  };
+
+  // Initial run x milliseconds from now
+  Kernel.timed(changeIn, Kernel.now() + milliseconds);
 
   // Clean up the timeout when there is no longer a dependency.
   Tracker.onInvalidate(function () {
-    if (timeout && !dependency.hasDependents()) {
-      Meteor.clearTimeout(timeout);
+    if (!dependency.hasDependents()) {
+      dependency = null;
     }
   });
 };
+
+/**
+ * Invalidation rutine for the reactive "_trackToday"
+ */
+var _invalidateToday = function _invalidateToday() {
+  // Update the reactive today
+  TimeTracker.today.set(Date());
+
+  // Run the timed function when we enter tomorrow
+  Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));
+};
+
+// Run the timed function when we enter tomorrow
+Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));

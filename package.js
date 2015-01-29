@@ -1,14 +1,18 @@
 Package.describe({
   name: 'dispatch:time-tracker',
   summary: 'Time-based reactivity.',
-  version: '1.0.0',
+  version: '1.0.1',
   git: 'https://github.com/DispatchMe/meteor-time-tracker.git'
 });
 
 Package.onUse(function (api) {
   api.versionsFrom('1.0');
 
-  api.use('tracker', 'web');
+  api.use([
+    'tracker',
+    'reactive-var',
+    'dispatch:kernel@0.0.2'
+  ], 'web');
 
   api.addFiles('time_tracker.js', 'web');
 
@@ -16,7 +20,7 @@ Package.onUse(function (api) {
 });
 
 Package.onTest(function (api) {
-  api.use(['tinytest', 'tracker', 'dispatch:time-tracker'], 'web');
+  api.use(['tinytest', 'tracker', 'dispatch:time-tracker', 'dispatch:kernel'], 'web');
 
   api.addFiles('time_tracker_tests.js', 'web');
 });

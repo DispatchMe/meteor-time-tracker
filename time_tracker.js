@@ -5,7 +5,7 @@ var _millisecondsFromNow = function(date) {
 };
 
 var _getTomorrow = function() {
-  var today = Date();
+  var today = new Date();
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
 };
 

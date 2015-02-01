@@ -10,7 +10,7 @@ var _getTomorrow = function() {
 };
 
 // Reactive variable tracking the date of today
-var _trackToday = new ReactiveVar(Date.now());
+var _trackToday = new ReactiveVar(new Date());
 
 /**
  * Provides a nice reactive function with the date of today
@@ -71,7 +71,7 @@ TimeTracker.changeIn = function (milliseconds) {
  */
 var _invalidateToday = function _invalidateToday() {
   // Update the reactive today
-  TimeTracker.today.set(Date());
+  TimeTracker.today.set(new Date());
 
   // Run the timed function when we enter tomorrow
   Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));

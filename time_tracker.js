@@ -1,12 +1,12 @@
 TimeTracker = {};
 
-var _millisecondsFromNow = function(date) {
+var _msFromNow = function(date) {
   return date.getTime() - (new Date()).getTime();
 };
 
 var _getTomorrow = function() {
-  var today = new Date();
-  return new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
+  var t = new Date();
+  return new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1, 0, 0, 0);
 };
 
 // Reactive variable tracking the date of today
@@ -25,7 +25,7 @@ TimeTracker.today =function() {
  * @param {Date} date
  */
 TimeTracker.changeAt = function (date) {
-  TimeTracker.changeIn(_millisecondsFromNow(date));
+  TimeTracker.changeIn(_msFromNow(date));
 };
 
 var FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
@@ -39,7 +39,9 @@ var FORTY_EIGHT_HOURS = 48 * 60 * 60 * 1000;
  * triggering that the dependency changed.
  */
 TimeTracker.changeIn = function (milliseconds) {
-  if (milliseconds < 0 || milliseconds > FORTY_EIGHT_HOURS) return;
+  if (milliseconds < 0 || milliseconds > FORTY_EIGHT_HOURS) {
+    return;
+  }
 
   var dependency = new Tracker.Dependency();
   dependency.depend();
@@ -53,7 +55,7 @@ TimeTracker.changeIn = function (milliseconds) {
       // Run again
       Kernel.timed(changeIn, runAt + milliseconds);
     }
-  };
+  }
 
   // Initial run x milliseconds from now
   Kernel.timed(changeIn, Kernel.now() + milliseconds);
@@ -74,8 +76,8 @@ var _invalidateToday = function _invalidateToday() {
   TimeTracker.today.set(new Date());
 
   // Run the timed function when we enter tomorrow
-  Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));
+  Kernel.timed(_invalidateToday, Kernel.now() + _msFromNow(_getTomorrow()));
 };
 
 // Run the timed function when we enter tomorrow
-Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));
+Kernel.timed(_invalidateToday, Kernel.now() + _msFromNow(_getTomorrow()));

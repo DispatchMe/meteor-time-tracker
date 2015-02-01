@@ -73,6 +73,10 @@
 	"passfail": false,
 	"white": false,
 	"predef": [
+		"Tracker",
+		"Kernel",
+		"ReactiveVar",
+		"TimeTracker",
 		"Meteor",
 		"Accounts",
 		"Session",

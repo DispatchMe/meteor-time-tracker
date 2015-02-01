@@ -73,7 +73,7 @@ TimeTracker.changeIn = function (milliseconds) {
  */
 var _invalidateToday = function _invalidateToday() {
   // Update the reactive today
-  TimeTracker.today.set(new Date());
+  _trackToday.set(new Date());
 
   // Run the timed function when we enter tomorrow
   Kernel.timed(_invalidateToday, Kernel.now() + _msFromNow(_getTomorrow()));

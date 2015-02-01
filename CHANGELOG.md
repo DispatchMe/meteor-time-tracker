@@ -1,7 +1,7 @@
 # Changelog
 
 ## vCurrent
-## [master] (https://github.com/DispatchMe/meteor-time-tracker/tree/master)
+## [v1.0.2] (https://github.com/DispatchMe/meteor-time-tracker/tree/v1.0.2)
 #### 01/02/15 by Morten Henriksen
 - Bump to version 1.0.2
 

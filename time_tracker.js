@@ -1,22 +1,22 @@
 TimeTracker = {};
 
-var _millisecondsFromNow = function(date) {
+var _millisecondsFromNow = function (date) {
   return date.getTime() - (new Date()).getTime();
 };
 
-var _getTomorrow = function() {
+var _getTomorrow = function () {
   var today = new Date();
   return new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0);
 };
 
 // Reactive variable tracking the date of today
-var _trackToday = new ReactiveVar(Date.now());
+var _trackToday = new ReactiveVar(new Date());
 
 /**
  * Provides a nice reactive function with the date of today
  * @return {Date}
  */
-TimeTracker.today =function() {
+TimeTracker.today = function () {
   return _trackToday.get();
 };
 
@@ -53,7 +53,7 @@ TimeTracker.changeIn = function (milliseconds) {
       // Run again
       Kernel.timed(changeIn, runAt + milliseconds);
     }
-  };
+  }
 
   // Initial run x milliseconds from now
   Kernel.timed(changeIn, Kernel.now() + milliseconds);
@@ -71,7 +71,7 @@ TimeTracker.changeIn = function (milliseconds) {
  */
 var _invalidateToday = function _invalidateToday() {
   // Update the reactive today
-  TimeTracker.today.set(Date());
+  _trackToday.set(new Date());
 
   // Run the timed function when we enter tomorrow
   Kernel.timed(_invalidateToday, Kernel.now() + _millisecondsFromNow(_getTomorrow()));

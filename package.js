@@ -11,7 +11,7 @@ Package.onUse(function (api) {
   api.use([
     'tracker',
     'reactive-var',
-    'dispatch:kernel@0.0.2'
+    'dispatch:kernel@0.0.3'
   ], 'web');
 
   api.addFiles('time_tracker.js', 'web');
